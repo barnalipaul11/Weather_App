@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Weather App</title>
+</head>
+<body>
+    <div class="weather-app">
+        <div class="location">
+            <h1 id="city-country">City, Country</h1>
+            <p class="date" id="date">Saturday, 21st January</p>
+        </div>
+        <div class="current-weather">
+            <div class="temperature" id="temperature">--°C</div>
+            <div class="condition" id="weather-description">Loading...</div>
+            <div class="icon" id="weather-icon">
+                <!-- Icon will be inserted here dynamically -->
+            </div>
+        </div>
+
+       <!-- Add this inside the <script> tag -->
+<script>
+    // Function to update weather information on the page
+    function updateWeather(data) {
+        document.getElementById("city-country").innerText = data.name + ", " + data.sys.country;
+        const date = new Date();
+        document.getElementById("date").innerText = date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+        document.getElementById("temperature").innerText = data.main.temp + "°C";
+        document.getElementById("weather-description").innerText = data.weather[0].description;
+
+        const icon = data.weather[0].icon;
+        const imageURL = "https://openweathermap.org/img/wn/" + icon + "@2x.png";
+        document.getElementById("weather-icon").innerHTML = "<img src=" + imageURL + ">";
+    }
+
+    // Fetch weather data from the server
+    fetch("/weather", { method: 'GET' })
+        .then(response => response.json())
+        .then(data => updateWeather(data))
+        .catch(error => console.error('Error fetching weather data:', error));
+</script>
+
+    </div>
+</body>
+</html>
